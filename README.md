@@ -20,11 +20,11 @@ Technologies:
 * 
 Installation and Launch:
 
-1. Clone the repository: bashCopy code  git clone https://github.com/VladislavBA09/DjangoWebApp.git 
+1. Clone the repository: git clone https://github.com/VladislavBA09/DjangoWebApp.git 
 2. Navigate to the project directory: bashCopy code  cd DjangoWebApp 
-3. Install the dependencies: bashCopy code  pip install -r requirements.txt 
-4. Run the database migrations: bashCopy code  python manage.py migrate 
-5. Start the development server: bashCopy code  python manage.py runserver 
+3. Install the dependencies: pip install -r requirements.txt 
+4. Run the database migrations: python manage.py migrate 
+5. Start the development server: python manage.py runserver 
 6. Open your browser and go to http://127.0.0.1:8000/registration/ to access the application.   
 															
 If you have any questions or suggestions, feel free to reach out to us at [brunko.vladislav@gmail.com].
