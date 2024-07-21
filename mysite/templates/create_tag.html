@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    {% load static %}
+    <script src="{% static 'dist/bundle.js' %}"></script>
+
+</head>
+<body class="bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top w-100">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+            <a class="navbar-brand" href="{% url 'posts' %}">Posts</a>
+            <a class="navbar-brand" href="{% url 'subscription' %}">Subscriptions</a>
+            <a class="navbar-brand" href="{% url 'profile' %}">Profile</a>
+            <a class="navbar-brand" href="{% url 'create_post' %}">Create Post</a>
+            <a class="navbar-brand" href="{% url 'create_tag' %}">Create Tag</a>
+        </div>
+
+        <div class="container-fluid ms-auto">
+            <a class="navbar-brand" href="{% url 'logout' %}" style="margin-left: auto;">Log Out</a>
+        </div>
+    </nav>
+
+    <main class="form-signin text-center">
+        <form method="post" class="w-100 mw-100 p-3" enctype="multipart/form-data">
+            <h1 class="alert alert-dark" >Create Tag</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group mb-3">
+                    <label for="id_name" class="form-label">Create Tag:</label>
+                    <input type="text" id="id_name" name="name" class="form-control" value="{{ user.name }}">
+                </div>
+                    <button class='btn btn-primary w-100 py-2' type="submit">Save Changes</button>
+                    <span class="error-message">{{ error }}</span>
+                    <span class="success-message">{{ success }}</span>
+            </form>
+        </form>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

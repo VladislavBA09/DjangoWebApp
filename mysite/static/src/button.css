@@ -1,0 +1,11 @@
+    .liked {
+            background-color: green;
+        }
+    .disliked {
+            background-color: green;
+        }
+    .post-photo {
+        max-width: 60%;
+        display: block;
+        margin: 0 auto;
+        }

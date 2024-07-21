@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Posts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    {% load static %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'dist/bundle.js' %}"></script>
+
+</head>
+<body class="bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top w-100">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+            <a class="navbar-brand" href="{% url 'posts' %}">Posts</a>
+            <a class="navbar-brand" href="{% url 'subscription' %}">Subscriptions</a>
+            <a class="navbar-brand" href="{% url 'profile' %}">Profile</a>
+            <a class="navbar-brand" href="{% url 'create_post' %}">Create Post</a>
+            <a class="navbar-brand" href="{% url 'create_tag' %}">Create Tag</a>
+        </div>
+
+        <div class="container-fluid ms-auto">
+            <a class="navbar-brand" href="{% url 'logout' %}" style="margin-left: auto;">Log Out</a>
+        </div>
+    </nav>
+    <main class="form-signin text-center">
+        <div class="container">
+            <h1>Posts</h1>
+            {% for post in posts %}
+            <div class="post-container">
+                <p>{{ post.content }}</p>
+                <div id="carousel{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for photo in post.postphoto_set.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img class="d-block w-100 post-photo" src="{{ photo.image_url }}" alt="Post Photo">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ forloop.counter }}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ forloop.counter }}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+                <ul>
+                    {% for tag in post.tags.all %}
+                    <li>{{ tag }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="button-wrapper">
+                    <form id="likeForm{{ post.id }}" action="{% url 'like_post' post.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{% url 'posts' %}">
+                        <button id="likeButton{{ post.id }}" class="btn btn-primary like-button {% if post.id in liked_posts %}liked{% endif %}" type="submit" data-post-id="{{ post.id }}">
+                            Like
+                        </button>
+                    </form>
+                    <form action="{% url 'dislike_post' post.id %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{% url 'posts' %}">
+                        <button class="btn btn-danger dislike-button {% if post.id in disliked_posts %}disliked{% endif %}" type="submit" data-post-id="{{ post.id }}">
+                            Dislike
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </main>
+</body>
+</html>

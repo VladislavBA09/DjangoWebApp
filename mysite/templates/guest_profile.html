@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Posts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    {% load static %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{% static 'dist/bundle.js' %}"></script>
+
+</head>
+<body class="bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top w-100">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+            <a class="navbar-brand" href="{% url 'posts' %}">Posts</a>
+            <a class="navbar-brand" href="{% url 'subscription' %}">Subscriptions</a>
+            <a class="navbar-brand" href="{% url 'profile' %}">Profile</a>
+            <a class="navbar-brand" href="{% url 'create_post' %}">Create Post</a>
+            <a class="navbar-brand" href="{% url 'create_tag' %}">Create Tag</a>
+        </div>
+
+        <div class="container-fluid ms-auto">
+            <a class="navbar-brand" href="{% url 'logout' %}" style="margin-left: auto;">Log Out</a>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">My Profile</h2>
+                        {% if my_image and my_image.image_url %}
+                            <img src="{{ my_image.image_url }}" alt="My Image" class="rounded-circle" width="200" height="200">
+                        {% endif %}
+                        <h6>First Name: {{ my_data.first_name }}</h6>
+                        <h6>Last Name: {{ my_data.last_name }}</h6>
+                        <h6>Biography: {{ my_data.bio }}</h6>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">My Followers</h2>
+                        {% for follower, images in follower_images.items %}
+                            {% for image in images %}
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ image.image_url }}" alt="Image" class="img-thumbnail me-2" width="100" height="100">
+                                    <h6>{{ follower.first_name }} {{ follower.last_name }}</h6>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h1>Posts</h1>
+                {% for post in posts %}
+                    <div class="post-container card mb-4">
+                        <div class="card-body">
+                            <p>{{ post.content }}</p>
+                            <div id="carousel{{ forloop.counter }}" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    {% for photo in post.postphoto_set.all %}
+                                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                            <img class="d-block w-100 post-photo" src="{{ photo.image_url }}" alt="Post Photo">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ forloop.counter }}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ forloop.counter }}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                            <ul class="list-inline mt-2">
+                                {% for tag in post.tags.all %}
+                                    <li class="list-inline-item">{{ tag }}</li>
+                                {% endfor %}
+                            </ul>
+                            <div class="button-wrapper d-flex justify-content-between mt-3">
+                                <form action="{% url 'guest_like' user_id=my_data.id %}" method="post" class="like-form" data-post-id="{{ post.id }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="user_id" value="{{ my_data.id }}">
+                                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                                    <button type="submit" class="btn btn-primary like-button {% if post.id in liked_posts %}liked{% endif %}">
+                                        Like
+                                    </button>
+                                </form>
+                                <form action="{% url 'guest_dislike' user_id=my_data.id %}" method="post" class="dislike-form" data-post-id="{{ post.id }}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="user_id" value="{{ my_data.id }}">
+                                    <input type="hidden" name="post_id" value="{{ post.id }}"> <!-- Добавлено скрытое поле для post_id -->
+                                    <button type="submit" class="btn btn-danger dislike-button {% if post.id in disliked_posts %}disliked{% endif %}">
+                                        Dislike
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
